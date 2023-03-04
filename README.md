@@ -165,24 +165,32 @@ Load the colvars module by typing the following command in the Tk Console:
 
 lua
 Copy code
+```
 package require colvars
+```
 Define the two atoms that you want to use to calculate the distance by selecting them in the VMD graphics window and using the following command in the Tk Console:
 python
 Copy code
+```
 set atom1 [atomselect top "index X"]
 set atom2 [atomselect top "index Y"]
+```
 where X and Y are the indices of the two atoms you selected.
 
 Define the CV based on the distance between the two atoms by using the following command:
 bash
 Copy code
+```
 colvar distance
 distance {
  name distance
  atoms { $atom1 $atom2 }
 }
+```
 Write out the configuration file by using the following command:
 Copy code
+```
 colvarsConfig distance.colvars
+```
 The configuration file "distance.colvars" can now be used in your molecular dynamics simulations with NAMD or other simulation software that supports the colvars module.
 Note: This is a very basic example of how to define a single CV in VMD. The colvars module has many other features and options that you can use to define more complex CVs based on various molecular properties such as angles, dihedrals, and other distances. You can find more information about the colvars module in the VMD User's Guide.
