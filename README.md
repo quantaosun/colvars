@@ -194,3 +194,81 @@ colvarsConfig distance.colvars
 ```
 The configuration file "distance.colvars" can now be used in your molecular dynamics simulations with NAMD or other simulation software that supports the colvars module.
 Note: This is a very basic example of how to define a single CV in VMD. The colvars module has many other features and options that you can use to define more complex CVs based on various molecular properties such as angles, dihedrals, and other distances. You can find more information about the colvars module in the VMD User's Guide.
+
+### A complete namd script for alchemical pathway simulation
+
+```
+# Load the required NAMD modules
+package require colvars
+
+# Define the name of the input PDB and PSF files
+set pdb_file "complex.pdb"
+set psf_file "complex.psf"
+
+# Define the name of the output DCD file
+set dcd_file "complex_alchemical.dcd"
+
+# Load the PDB and PSF files
+structure $pdb_file
+coordpdb $pdb_file
+
+# Define the parameters for the distance collective variable (CV)
+colvar {
+  name distance
+  distance {
+    group1 {
+      atomNumbers { # List of atom numbers of the first group
+        ...
+      }
+    }
+    group2 {
+      atomNumbers { # List of atom numbers of the second group
+        ...
+      }
+    }
+  }
+}
+
+# Define the parameters for the alchemical calculation
+alchemical_lambda {
+  lambda_schedule
+  {
+    lambdaWindow
+    {
+      windowStart 0.0
+      windowEnd 0.1
+      transitionStart 0.05
+      transitionEnd 0.06
+    }
+    lambdaWindow
+    {
+      windowStart 0.1
+      windowEnd 0.2
+      transitionStart 0.15
+      transitionEnd 0.16
+    }
+    ...
+  }
+  lambdaParmfile
+  {
+    parmfile $psf_file
+  }
+  lambdaScript
+  {
+    energyScript energy.in
+  }
+  lambdaRestart
+  {
+    restartfile restart.alch
+  }
+}
+
+# Define the simulation parameters
+set temperature 300.0
+set numsteps 10000
+
+# Start the simulation
+binary output $dcd_file
+run $numsteps
+
+```
